@@ -30,6 +30,7 @@ In activity(or other component) capture image or record video and audio
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private ImageView ivCapturedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,19 +38,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // capture image
+        ivCapturedImage = findViewById(R.id.ivCapturedImage);
         Button captureImageButton = findViewById(R.id.btnCaptureImage);
         captureImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MediaProvider.captureImage(new MediaProvider.OnImageCapturedListener() {
+                MediaProvider.captureImage(MainActivity.this, new MediaProvider.OnImageCapturedListener() {
                     @Override
-                    public void onImage(File file) {
-
+                    public void onImage(File file, Uri uri) {
+                        ivCapturedImage.setImageURI(uri);
+                        Toast.makeText(MainActivity.this, "Image Captured Success: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError(Exception error) {
-
+                        Toast.makeText(MainActivity.this, "Image Captured Failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }

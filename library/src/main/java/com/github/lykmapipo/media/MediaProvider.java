@@ -145,7 +145,7 @@ public class MediaProvider {
             startForResult(activity, imageCaptureIntent, new ActivityResultListener() {
                 @Override
                 public void onSuccess(Result result) {
-                    listener.onImage(imageFile);
+                    listener.onImage(imageFile, imageFileUri);
                 }
 
                 @Override
@@ -169,7 +169,7 @@ public class MediaProvider {
     }
 
     public interface OnImageCapturedListener {
-        void onImage(File file);
+        void onImage(File file, Uri uri);
 
         void onError(Exception error);
     }

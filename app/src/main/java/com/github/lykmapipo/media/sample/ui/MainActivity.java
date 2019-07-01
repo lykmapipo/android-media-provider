@@ -1,8 +1,10 @@
 package com.github.lykmapipo.media.sample.ui;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +18,7 @@ import java.io.File;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private ImageView ivCapturedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,13 +26,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // capture image
+        ivCapturedImage = findViewById(R.id.ivCapturedImage);
         Button captureImageButton = findViewById(R.id.btnCaptureImage);
         captureImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MediaProvider.captureImage(MainActivity.this, new MediaProvider.OnImageCapturedListener() {
                     @Override
-                    public void onImage(File file) {
+                    public void onImage(File file, Uri uri) {
+                        ivCapturedImage.setImageURI(uri);
                         Toast.makeText(MainActivity.this, "Image Captured Success: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                     }
 
