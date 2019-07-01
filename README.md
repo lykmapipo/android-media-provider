@@ -1,5 +1,5 @@
-android-media-provider(WIP)
-===========================
+android-media-provider
+======================
 
 [![](https://jitpack.io/v/lykmapipo/android-media-provider.svg)](https://jitpack.io/#lykmapipo/android-media-provider)
 
@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private ImageView ivCapturedImage;
+    private VideoView vvRecordedVideo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,19 +60,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // record video
+        vvRecordedVideo = findViewById(R.id.vvRecordedVideo);
         Button recordVideoButton = findViewById(R.id.btnRecordVideo);
         recordVideoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MediaProvider.recordVideo(new MediaProvider.OnVideoRecordedListener() {
+                MediaProvider.recordVideo(MainActivity.this, new MediaProvider.OnVideoRecordedListener() {
                     @Override
-                    public void onVideo(File file) {
-
+                    public void onVideo(File file, Uri uri) {
+                        vvRecordedVideo.setVideoURI(uri);
+                        vvRecordedVideo.start();
+                        Toast.makeText(MainActivity.this, "Video Recorded Success: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError(Exception error) {
-
+                        Toast.makeText(MainActivity.this, "Video Recorded Failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
