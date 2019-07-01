@@ -6,8 +6,8 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.github.lykmapipo.media.sample.R;
 import com.github.lykmapipo.media.MediaProvider;
+import com.github.lykmapipo.media.sample.R;
 
 import java.io.File;
 
