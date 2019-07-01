@@ -2,7 +2,9 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -45,6 +47,14 @@
             android:layout_marginTop="340dp"
             android:contentDescription="Captured Image"
             android:scaleType="centerCrop" />
+
+        <VideoView
+            android:id="@+id/vvRecordedVideo"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="580dp"
+            android:contentDescription="Recorded Video" />
 
     </RelativeLayout>
 </androidx.core.widget.NestedScrollView>

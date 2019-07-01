@@ -31,6 +31,7 @@ import static com.github.florent37.inlineactivityresult.InlineActivityResult.sta
  */
 public class MediaProvider {
     private static final String MEDIA_IMAGE_SUFFIX = ".jpg";
+    private static final String MEDIA_VIDEO_SUFFIX = ".mp4";
     private static final String MEDIA_PROVIDER_PATH = "medias";
     private static final String MEDIA_PROVIDER_AUTHORITIES_SUFFIX = "fileprovider";
     private static final int REQUEST_IMAGE_CAPTURE_CODE = 1;
@@ -45,6 +46,31 @@ public class MediaProvider {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String fileName = timeStamp + "_";
         return fileName;
+    }
+
+    /**
+     * Create temporary video file
+     *
+     * @param context
+     * @return temporary video file
+     * @throws IOException
+     * @since 0.1.0
+     */
+    public static synchronized File createVideoTempFile(@NonNull Context context) throws IOException {
+        File mediaDir = getMediaDir(context);
+
+        // generate random filename
+        String fileName = getRandomFileName();
+
+        // create temporary video file
+        File imageTempFile = File.createTempFile(
+                fileName,
+                MEDIA_VIDEO_SUFFIX,
+                mediaDir
+        );
+
+        // return created video temp file
+        return imageTempFile;
     }
 
     /**
@@ -164,7 +190,54 @@ public class MediaProvider {
         }
     }
 
-    public static synchronized void recordVideo(OnVideoRecordedListener listener) {
+    /**
+     * Record video
+     *
+     * @param activity
+     * @param listener
+     * @since 0.1.0
+     */
+    public static synchronized void recordVideo(
+            @NonNull FragmentActivity activity,
+            @NonNull OnVideoRecordedListener listener) {
+
+        // try record video
+        try {
+            // TODO refactor to us background task
+            // prepare video file & uri
+            File videoFile = createVideoTempFile(activity);
+            Uri videoFileUri = getUriFor(activity, videoFile);
+
+            // create intent
+            Intent videoRecordIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            videoRecordIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoFileUri);
+
+            // ensure that there's a camera activity to handle the intent
+            PackageManager packageManager = activity.getPackageManager();
+            boolean canCapture = videoRecordIntent.resolveActivity(packageManager) != null;
+            if (!canCapture) {
+                throw new Exception("Camera Not Found");
+            }
+
+            // request image capture
+            startForResult(activity, videoRecordIntent, new ActivityResultListener() {
+                @Override
+                public void onSuccess(Result result) {
+                    listener.onVideo(videoFile, videoFileUri);
+                }
+
+                @Override
+                public void onFailed(Result result) {
+                    Exception error = new Exception("Video Capture Failed");
+                    listener.onError(error);
+                }
+            });
+        }
+
+        // handle video capture errors
+        catch (Exception error) {
+            listener.onError(error);
+        }
     }
 
     /**
@@ -179,6 +252,7 @@ public class MediaProvider {
             @NonNull OnAudioRecordedListener listener) {
 
         // try record audio
+        // TODO use https://github.com/3llomi/RecordView
         try {
             // TODO refactor to us background task
             // prepare audio file & uri
@@ -226,7 +300,7 @@ public class MediaProvider {
     }
 
     public interface OnVideoRecordedListener {
-        void onVideo(File file);
+        void onVideo(File file, Uri uri);
 
         void onError(Exception error);
     }
