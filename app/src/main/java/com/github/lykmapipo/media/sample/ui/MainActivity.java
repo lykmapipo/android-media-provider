@@ -3,6 +3,7 @@ package com.github.lykmapipo.media.sample.ui;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,15 +27,15 @@ public class MainActivity extends AppCompatActivity {
         captureImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MediaProvider.captureImage(new MediaProvider.OnImageCapturedListener() {
+                MediaProvider.captureImage(MainActivity.this, new MediaProvider.OnImageCapturedListener() {
                     @Override
                     public void onImage(File file) {
-
+                        Toast.makeText(MainActivity.this, "Image Captured Success: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError(Exception error) {
-
+                        Toast.makeText(MainActivity.this, "Image Captured Failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }

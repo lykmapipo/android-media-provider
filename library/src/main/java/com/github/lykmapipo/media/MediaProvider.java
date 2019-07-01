@@ -2,16 +2,25 @@ package com.github.lykmapipo.media;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A pack of helpful helpers to gather images, video and audio from media source(s).
@@ -24,6 +33,8 @@ public class MediaProvider {
     private static final String MEDIA_IMAGE_SUFFIX = ".jpg";
     private static final String MEDIA_PROVIDER_PATH = "medias";
     private static final String MEDIA_PROVIDER_AUTHORITIES_SUFFIX = "fileprovider";
+    private static final String REQUEST_IMAGE_CAPTURE_TAG = ImageCaptureFragment.class.getSimpleName();
+    private static final int REQUEST_IMAGE_CAPTURE_CODE = 1;
 
     /**
      * Generate random file name
@@ -104,7 +115,20 @@ public class MediaProvider {
     public static synchronized void clear() {
     }
 
-    public static synchronized void captureImage(OnImageCapturedListener listener) {
+    public static synchronized void captureImage(@NonNull AppCompatActivity activity, @NonNull OnImageCapturedListener listener) {
+        // prepare fragment manager and transaction
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // TODO find existing
+//        Fragment fragment = fragmentManager.findFragmentByTag(REQUEST_IMAGE_CAPTURE_TAG);
+        ImageCaptureFragment imageCaptureFragment = new ImageCaptureFragment(listener);
+        fragmentTransaction.add(imageCaptureFragment, REQUEST_IMAGE_CAPTURE_TAG);
+        fragmentTransaction.commitAllowingStateLoss();
+        fragmentManager.executePendingTransactions();
+
+        // launch image capture intent
+        imageCaptureFragment.startForResult();
     }
 
     public static synchronized void recordVideo(OnVideoRecordedListener listener) {
@@ -129,5 +153,62 @@ public class MediaProvider {
         void onAudio(File file);
 
         void onError(Exception error);
+    }
+
+    /**
+     * Image capture request fragment
+     *
+     * @since 0.1.0
+     */
+    static class ImageCaptureFragment extends Fragment {
+        OnImageCapturedListener listener; //TODO use week references
+        File imageFile;
+        Uri imageFileUri;
+
+        public ImageCaptureFragment(@NonNull OnImageCapturedListener listener) {
+            this.listener = listener;
+        }
+
+        public void startForResult() {
+            // try launch image capture activity
+            try {
+                // prepare image capture intent
+                Intent captureImageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                // ensure that there's a camera activity to handle the intent
+                PackageManager packageManager = getActivity().getPackageManager();
+                boolean canCapture = captureImageIntent.resolveActivity(packageManager) != null;
+
+                // throw not camera
+                if (!canCapture) {
+                    throw new Exception("Camera Not Found"); //TODO use string res
+                }
+                // continue with capturing image
+                else {
+                    // obtain image temp file and uri
+                    imageFile = createImageTempFile(getActivity());
+                    imageFileUri = getUriFor(getActivity(), imageFile);
+
+                    // update intent with image uri
+                    captureImageIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
+                    startActivityForResult(captureImageIntent, REQUEST_IMAGE_CAPTURE_CODE);
+                }
+            }
+            // catch all errors and notify
+            catch (Exception error) {
+                listener.onError(error);
+            }
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE_CODE && resultCode == RESULT_OK) {
+                if (listener != null) {
+                    listener.onImage(imageFile);
+                }
+            }
+            // TODO remove fragment
+            // TODO handle other result codes
+        }
     }
 }
