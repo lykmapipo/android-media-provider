@@ -1,0 +1,38 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+
+
+    lintOptions {
+        abortOnError false
+    }
+
+    defaultConfig {
+        applicationId "com.github.lykmapipo.localburst.sample"
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 10
+        versionName "0.1.0"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    //local dependencies
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //androidx dependencies
+    implementation "androidx.appcompat:appcompat:${ANDROIDX_APPCOMPACT_VERSION}"
+}
