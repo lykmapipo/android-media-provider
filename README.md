@@ -82,15 +82,15 @@ public class MainActivity extends AppCompatActivity {
         recordAudioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MediaProvider.recordAudio(new MediaProvider.OnAudioRecordedListener() {
+                MediaProvider.recordAudio(MainActivity.this, new MediaProvider.OnAudioRecordedListener() {
                     @Override
-                    public void onAudio(File file) {
-
+                    public void onAudio(File file, Uri uri) {
+                        Toast.makeText(MainActivity.this, "Audio Record Success: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError(Exception error) {
-
+                        Toast.makeText(MainActivity.this, "Audio Record Failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
