@@ -6,7 +6,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.github.lykmapipo.localburst.sample.R;
+import com.github.lykmapipo.media.sample.R;
 import com.github.lykmapipo.media.MediaProvider;
 
 import java.io.File;

@@ -8,7 +8,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.github.lykmapipo.localburst.sample"
+        applicationId "com.github.lykmapipo.media.sample"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 10
