@@ -46,17 +46,7 @@ public class MediaProvider {
      * @since 0.1.0
      */
     public static synchronized File createImageTempFile(@NonNull Context context) throws IOException {
-        // obtain cache directory
-        File cacheDir = context.getCacheDir();
-        if (!cacheDir.exists()) {
-            cacheDir.mkdirs();
-        }
-
-        // prepare media storage directory
-        File mediaDir = new File(cacheDir, MEDIA_PROVIDER_PATH);
-        if (!mediaDir.exists()) {
-            mediaDir.mkdirs();
-        }
+        File mediaDir = getMediaDir(context);
 
         // generate random filename
         String fileName = getRandomFileName();
@@ -70,6 +60,27 @@ public class MediaProvider {
 
         // return created image temp file
         return imageTempFile;
+    }
+
+    /**
+     * Obtain media root directory relative to {@link Context#getCacheDir()}
+     *
+     * @param context
+     * @return
+     */
+    public static File getMediaDir(@NonNull Context context) {
+        // obtain cache directory
+        File cacheDir = context.getCacheDir();
+        if (!cacheDir.exists()) {
+            cacheDir.mkdirs();
+        }
+
+        // prepare media storage directory
+        File mediaDir = new File(cacheDir, MEDIA_PROVIDER_PATH);
+        if (!mediaDir.exists()) {
+            mediaDir.mkdirs();
+        }
+        return mediaDir;
     }
 
     /**

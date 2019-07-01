@@ -38,6 +38,12 @@ public class MediaProviderTest {
     }
 
     @Test
+    public void testShouldObtainMediaDirectory() throws Exception {
+        File file = MediaProvider.getMediaDir(context);
+        assertTrue("Should obtain media directory", file != null);
+    }
+
+    @Test
     public void testShouldObtainFileUri() throws Exception {
         File file = MediaProvider.createImageTempFile(context);
         Uri uri = MediaProvider.getUriFor(context, file);
