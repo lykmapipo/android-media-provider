@@ -7,6 +7,9 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.lykmapipo.localburst.sample.R;
+import com.github.lykmapipo.media.MediaProvider;
+
+import java.io.File;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -23,7 +26,17 @@ public class MainActivity extends AppCompatActivity {
         captureImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//               MediaProvider.captureImage();
+                MediaProvider.captureImage(new MediaProvider.OnImageCapturedListener() {
+                    @Override
+                    public void onImage(File file) {
+
+                    }
+
+                    @Override
+                    public void onError(Exception error) {
+
+                    }
+                });
             }
         });
 

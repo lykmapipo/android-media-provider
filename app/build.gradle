@@ -1,8 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
-
+    compileSdkVersion 29
 
     lintOptions {
         abortOnError false
@@ -11,14 +10,14 @@ android {
     defaultConfig {
         applicationId "com.github.lykmapipo.localburst.sample"
         minSdkVersion 15
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 10
         versionName "0.1.0"
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
-        targetCompatibility JavaVersion.VERSION_1_6
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     buildTypes {
@@ -32,6 +31,7 @@ android {
 dependencies {
     //local dependencies
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(path: ':library')
 
     //androidx dependencies
     implementation "androidx.appcompat:appcompat:${ANDROIDX_APPCOMPACT_VERSION}"
