@@ -1,6 +1,7 @@
 package com.github.lykmapipo.media;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -33,7 +34,14 @@ public class MediaProviderTest {
     @Test
     public void testShouldCreateImageTempFile() throws Exception {
         File file = MediaProvider.createImageTempFile(context);
-        assertTrue("File should be created", file != null);
+        assertTrue("Should create temp file", file != null);
+    }
+
+    @Test
+    public void testShouldObtainFileUri() throws Exception {
+        File file = MediaProvider.createImageTempFile(context);
+        Uri uri = MediaProvider.getUriFor(context, file);
+        assertTrue("Should obtain uri for existing file", uri != null);
     }
 
     @After

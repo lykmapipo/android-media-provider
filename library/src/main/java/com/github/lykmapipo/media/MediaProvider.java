@@ -2,8 +2,10 @@ package com.github.lykmapipo.media;
 
 
 import android.content.Context;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +23,7 @@ import java.util.Locale;
 public class MediaProvider {
     private static final String MEDIA_IMAGE_SUFFIX = ".jpg";
     private static final String MEDIA_PROVIDER_PATH = "medias";
-    private static final String MEDIA_PROVIDER_AUTHORITIES_SUFFIX = "medias";
+    private static final String MEDIA_PROVIDER_AUTHORITIES_SUFFIX = "fileprovider";
 
     /**
      * Generate random file name
@@ -68,6 +70,24 @@ public class MediaProvider {
 
         // return created image temp file
         return imageTempFile;
+    }
+
+    /**
+     * Obtain {@link Uri} for a given {@link File} instance
+     *
+     * @param context
+     * @param file
+     * @return valid {@link Uri} for the given {@link File} instance
+     * @since 0.1.0
+     */
+    public static synchronized Uri getUriFor(Context context, File file) throws Exception {
+        // obtain authority
+        String packageName = context.getPackageName();
+        String authority = packageName + "." + MEDIA_PROVIDER_AUTHORITIES_SUFFIX;
+
+        // obtain file uri
+        Uri uri = FileProvider.getUriForFile(context, authority, file);
+        return uri;
     }
 
     public static synchronized void clear() {
