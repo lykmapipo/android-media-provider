@@ -27,7 +27,7 @@ dependencies {
 In activity(or other component) capture image or record video and audio
 
 ```java
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -36,42 +36,60 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // capture an image
-        MediaProvider.captureImage(new OnImageCapturedListener(){
+        // capture image
+        Button captureImageButton = findViewById(R.id.btnCaptureImage);
+        captureImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onImage(File file){
-                
-            }
-            
-            @Override
-            public void onError(Exception error){
-                
-            }
-        });
-        
-        // record a video
-        MediaProvider.recordVideo(new OnVideoRecordedListener(){
-            @Override
-            public void onVideo(File file){
-                
-            }
-            
-            @Override
-            public void onError(Exception error){
-                
+            public void onClick(View v) {
+                MediaProvider.captureImage(new MediaProvider.OnImageCapturedListener() {
+                    @Override
+                    public void onImage(File file) {
+
+                    }
+
+                    @Override
+                    public void onError(Exception error) {
+
+                    }
+                });
             }
         });
-        
-        // record a video
-        MediaProvider.recordAudio(new OnAudioRecordedListener(){
+
+        // record video
+        Button recordVideoButton = findViewById(R.id.btnRecordVideo);
+        recordVideoButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onAudio(File file){
-                
+            public void onClick(View v) {
+                MediaProvider.recordVideo(new MediaProvider.OnVideoRecordedListener() {
+                    @Override
+                    public void onVideo(File file) {
+
+                    }
+
+                    @Override
+                    public void onError(Exception error) {
+
+                    }
+                });
             }
-            
+        });
+
+        // record audio
+        Button recordAudioButton = findViewById(R.id.btnRecordAudio);
+        recordAudioButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onError(Exception error){
-                
+            public void onClick(View v) {
+                MediaProvider.recordAudio(new MediaProvider.OnAudioRecordedListener() {
+                    @Override
+                    public void onAudio(File file) {
+
+                    }
+
+                    @Override
+                    public void onError(Exception error) {
+
+                    }
+                });
             }
         });
     }

@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //capture image
+        // capture image
         Button captureImageButton = findViewById(R.id.btnCaptureImage);
         captureImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,39 +40,42 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //record video
+        // record video
         Button recordVideoButton = findViewById(R.id.btnRecordVideo);
         recordVideoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//               MediaProvider.recordVideo();
+                MediaProvider.recordVideo(new MediaProvider.OnVideoRecordedListener() {
+                    @Override
+                    public void onVideo(File file) {
+
+                    }
+
+                    @Override
+                    public void onError(Exception error) {
+
+                    }
+                });
             }
         });
 
-        //record audio
+        // record audio
         Button recordAudioButton = findViewById(R.id.btnRecordAudio);
         recordAudioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//               MediaProvider.recordAudio();
+                MediaProvider.recordAudio(new MediaProvider.OnAudioRecordedListener() {
+                    @Override
+                    public void onAudio(File file) {
+
+                    }
+
+                    @Override
+                    public void onError(Exception error) {
+
+                    }
+                });
             }
         });
-
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }
