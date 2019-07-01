@@ -33,7 +33,7 @@ dependencies {
     //androidx dependencies
     implementation "androidx.annotation:annotation:${ANDROIDX_ANNOTATION_VERSION}"
     implementation "androidx.appcompat:appcompat:${ANDROIDX_APPCOMPACT_VERSION}"
-    implementation "com.google.code.gson:gson:${GSON_VERSION}"
+    implementation "com.github.florent37:inline-activity-result:${INLINE_ACTIVITY_RESULT_VERSION}"
 
     //test dependencies
     testImplementation "junit:junit:${JUNIT_VERSION}"

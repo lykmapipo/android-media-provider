@@ -8,11 +8,11 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.FragmentActivity;
+
+import com.github.florent37.inlineactivityresult.Result;
+import com.github.florent37.inlineactivityresult.callbacks.ActivityResultListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static android.app.Activity.RESULT_OK;
+import static com.github.florent37.inlineactivityresult.InlineActivityResult.startForResult;
 
 /**
  * A pack of helpful helpers to gather images, video and audio from media source(s).
@@ -33,7 +33,6 @@ public class MediaProvider {
     private static final String MEDIA_IMAGE_SUFFIX = ".jpg";
     private static final String MEDIA_PROVIDER_PATH = "medias";
     private static final String MEDIA_PROVIDER_AUTHORITIES_SUFFIX = "fileprovider";
-    private static final String REQUEST_IMAGE_CAPTURE_TAG = ImageCaptureFragment.class.getSimpleName();
     private static final int REQUEST_IMAGE_CAPTURE_CODE = 1;
 
     /**
@@ -115,20 +114,52 @@ public class MediaProvider {
     public static synchronized void clear() {
     }
 
-    public static synchronized void captureImage(@NonNull AppCompatActivity activity, @NonNull OnImageCapturedListener listener) {
-        // prepare fragment manager and transaction
-        FragmentManager fragmentManager = activity.getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+    /**
+     * Capture image
+     *
+     * @param activity
+     * @param listener
+     */
+    public static synchronized void captureImage(
+            @NonNull FragmentActivity activity,
+            @NonNull OnImageCapturedListener listener) {
 
-        // TODO find existing
-//        Fragment fragment = fragmentManager.findFragmentByTag(REQUEST_IMAGE_CAPTURE_TAG);
-        ImageCaptureFragment imageCaptureFragment = new ImageCaptureFragment(listener);
-        fragmentTransaction.add(imageCaptureFragment, REQUEST_IMAGE_CAPTURE_TAG);
-        fragmentTransaction.commitAllowingStateLoss();
-        fragmentManager.executePendingTransactions();
+        // try capture image
+        try {
+            // prepare image file & uri
+            File imageFile = createImageTempFile(activity);
+            Uri imageFileUri = getUriFor(activity, imageFile);
 
-        // launch image capture intent
-        imageCaptureFragment.startForResult();
+            // create intent
+            Intent imageCaptureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            imageCaptureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
+
+            // ensure that there's a camera activity to handle the intent
+            PackageManager packageManager = activity.getPackageManager();
+            boolean canCapture = imageCaptureIntent.resolveActivity(packageManager) != null;
+            if (!canCapture) {
+                throw new Exception("Camera Not Found");
+            }
+
+            // request image capture
+            startForResult(activity, imageCaptureIntent, new ActivityResultListener() {
+                @Override
+                public void onSuccess(Result result) {
+                    listener.onImage(imageFile);
+                }
+
+                @Override
+                public void onFailed(Result result) {
+                    Exception error = new Exception("Image Capture Failed");
+                    listener.onError(error);
+                }
+            });
+        }
+
+        // handle image capture errors
+        catch (Exception error) {
+            listener.onError(error);
+        }
     }
 
     public static synchronized void recordVideo(OnVideoRecordedListener listener) {
@@ -155,60 +186,4 @@ public class MediaProvider {
         void onError(Exception error);
     }
 
-    /**
-     * Image capture request fragment
-     *
-     * @since 0.1.0
-     */
-    static class ImageCaptureFragment extends Fragment {
-        OnImageCapturedListener listener; //TODO use week references
-        File imageFile;
-        Uri imageFileUri;
-
-        public ImageCaptureFragment(@NonNull OnImageCapturedListener listener) {
-            this.listener = listener;
-        }
-
-        public void startForResult() {
-            // try launch image capture activity
-            try {
-                // prepare image capture intent
-                Intent captureImageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                // ensure that there's a camera activity to handle the intent
-                PackageManager packageManager = getActivity().getPackageManager();
-                boolean canCapture = captureImageIntent.resolveActivity(packageManager) != null;
-
-                // throw not camera
-                if (!canCapture) {
-                    throw new Exception("Camera Not Found"); //TODO use string res
-                }
-                // continue with capturing image
-                else {
-                    // obtain image temp file and uri
-                    imageFile = createImageTempFile(getActivity());
-                    imageFileUri = getUriFor(getActivity(), imageFile);
-
-                    // update intent with image uri
-                    captureImageIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
-                    startActivityForResult(captureImageIntent, REQUEST_IMAGE_CAPTURE_CODE);
-                }
-            }
-            // catch all errors and notify
-            catch (Exception error) {
-                listener.onError(error);
-            }
-        }
-
-        @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            if (requestCode == REQUEST_IMAGE_CAPTURE_CODE && resultCode == RESULT_OK) {
-                if (listener != null) {
-                    listener.onImage(imageFile);
-                }
-            }
-            // TODO remove fragment
-            // TODO handle other result codes
-        }
-    }
 }
