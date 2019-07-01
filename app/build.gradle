@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.github.lykmapipo.localburst.sample"
-        minSdkVersion 15
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 10
         versionName "0.1.0"
