@@ -119,6 +119,7 @@ public class MediaProvider {
      *
      * @param activity
      * @param listener
+     * @since 0.1.0
      */
     public static synchronized void captureImage(
             @NonNull FragmentActivity activity,
@@ -126,6 +127,7 @@ public class MediaProvider {
 
         // try capture image
         try {
+            // TODO refactor to us background task
             // prepare image file & uri
             File imageFile = createImageTempFile(activity);
             Uri imageFileUri = getUriFor(activity, imageFile);
@@ -165,7 +167,56 @@ public class MediaProvider {
     public static synchronized void recordVideo(OnVideoRecordedListener listener) {
     }
 
-    public static synchronized void recordAudio(OnAudioRecordedListener listener) {
+    /**
+     * Record an audio
+     *
+     * @param activity
+     * @param listener
+     * @since 0.1.0
+     */
+    public static synchronized void recordAudio(
+            @NonNull FragmentActivity activity,
+            @NonNull OnAudioRecordedListener listener) {
+
+        // try record audio
+        try {
+            // TODO refactor to us background task
+            // prepare audio file & uri
+            File audioFile = createImageTempFile(activity);
+            Uri imageFileUri = getUriFor(activity, audioFile);
+
+            // create intent
+            Intent audioRecordIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+
+            // ensure that there's a audio recorder activity to handle the intent
+            PackageManager packageManager = activity.getPackageManager();
+            boolean canRecord = audioRecordIntent.resolveActivity(packageManager) != null;
+            if (!canRecord) {
+                throw new Exception("Audio Recorder Not Found");
+            }
+
+            // request audio recording
+            startForResult(activity, audioRecordIntent, new ActivityResultListener() {
+                @Override
+                public void onSuccess(Result result) {
+                    Intent data = result.getData();
+                    Uri uri = data.getData();
+                    // TODO construct file from uri
+                    listener.onAudio(audioFile, uri);
+                }
+
+                @Override
+                public void onFailed(Result result) {
+                    Exception error = new Exception("Audio Record Failed");
+                    listener.onError(error);
+                }
+            });
+        }
+
+        // handle audio record errors
+        catch (Exception error) {
+            listener.onError(error);
+        }
     }
 
     public interface OnImageCapturedListener {
@@ -181,7 +232,7 @@ public class MediaProvider {
     }
 
     public interface OnAudioRecordedListener {
-        void onAudio(File file);
+        void onAudio(File file, Uri uri);
 
         void onError(Exception error);
     }
