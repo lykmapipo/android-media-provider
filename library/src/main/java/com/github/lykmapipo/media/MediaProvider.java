@@ -173,20 +173,20 @@ public class MediaProvider {
             startForResult(activity, imageCaptureIntent, new ActivityResultListener() {
                 @Override
                 public void onSuccess(Result result) {
-                    listener.onImage(imageFile, imageFileUri);
+                    listener.onSuccess(imageFile, imageFileUri);
                 }
 
                 @Override
                 public void onFailed(Result result) {
                     Exception error = new Exception("Image Capture Failed");
-                    listener.onError(error);
+                    listener.onFailure(error);
                 }
             });
         }
 
         // handle image capture errors
         catch (Exception error) {
-            listener.onError(error);
+            listener.onFailure(error);
         }
     }
 
@@ -223,20 +223,20 @@ public class MediaProvider {
             startForResult(activity, videoRecordIntent, new ActivityResultListener() {
                 @Override
                 public void onSuccess(Result result) {
-                    listener.onVideo(videoFile, videoFileUri);
+                    listener.onSuccess(videoFile, videoFileUri);
                 }
 
                 @Override
                 public void onFailed(Result result) {
                     Exception error = new Exception("Video Capture Failed");
-                    listener.onError(error);
+                    listener.onFailure(error);
                 }
             });
         }
 
         // handle video capture errors
         catch (Exception error) {
-            listener.onError(error);
+            listener.onFailure(error);
         }
     }
 
@@ -276,39 +276,39 @@ public class MediaProvider {
                     Intent data = result.getData();
                     Uri uri = data.getData();
                     // TODO construct file from uri
-                    listener.onAudio(audioFile, uri);
+                    listener.onSuccess(audioFile, uri);
                 }
 
                 @Override
                 public void onFailed(Result result) {
                     Exception error = new Exception("Audio Record Failed");
-                    listener.onError(error);
+                    listener.onFailure(error);
                 }
             });
         }
 
         // handle audio record errors
         catch (Exception error) {
-            listener.onError(error);
+            listener.onFailure(error);
         }
     }
 
     public interface OnImageCapturedListener {
-        void onImage(File file, Uri uri);
+        void onSuccess(File file, Uri uri);
 
-        void onError(Exception error);
+        void onFailure(Exception error);
     }
 
     public interface OnVideoRecordedListener {
-        void onVideo(File file, Uri uri);
+        void onSuccess(File file, Uri uri);
 
-        void onError(Exception error);
+        void onFailure(Exception error);
     }
 
     public interface OnAudioRecordedListener {
-        void onAudio(File file, Uri uri);
+        void onSuccess(File file, Uri uri);
 
-        void onError(Exception error);
+        void onFailure(Exception error);
     }
 
 }

@@ -46,13 +46,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 MediaProvider.captureImage(MainActivity.this, new MediaProvider.OnImageCapturedListener() {
                     @Override
-                    public void onImage(File file, Uri uri) {
+                    public void onSuccess(File file, Uri uri) {
                         ivCapturedImage.setImageURI(uri);
                         Toast.makeText(MainActivity.this, "Image Captured Success: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onError(Exception error) {
+                    public void onFailure(Exception error) {
                         Toast.makeText(MainActivity.this, "Image Captured Failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -67,14 +67,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 MediaProvider.recordVideo(MainActivity.this, new MediaProvider.OnVideoRecordedListener() {
                     @Override
-                    public void onVideo(File file, Uri uri) {
+                    public void onSuccess(File file, Uri uri) {
                         vvRecordedVideo.setVideoURI(uri);
                         vvRecordedVideo.start();
                         Toast.makeText(MainActivity.this, "Video Recorded Success: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onError(Exception error) {
+                    public void onFailure(Exception error) {
                         Toast.makeText(MainActivity.this, "Video Recorded Failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -88,12 +88,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 MediaProvider.recordAudio(MainActivity.this, new MediaProvider.OnAudioRecordedListener() {
                     @Override
-                    public void onAudio(File file, Uri uri) {
+                    public void onSuccess(File file, Uri uri) {
                         Toast.makeText(MainActivity.this, "Audio Record Success: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onError(Exception error) {
+                    public void onFailure(Exception error) {
                         Toast.makeText(MainActivity.this, "Audio Record Failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
