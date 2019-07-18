@@ -18,7 +18,7 @@ add `android-media-provider` dependency into your project
 
 ```gradle
 dependencies {
-    compile 'com.github.lykmapipo:android-media-provider:v0.3.0'
+    implementation 'com.github.lykmapipo:android-media-provider:v0.3.0'
 }
 ```
 
