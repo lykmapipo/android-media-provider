@@ -32,7 +32,4 @@ dependencies {
     //local dependencies
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':library')
-
-    //androidx dependencies
-    implementation "androidx.appcompat:appcompat:${ANDROIDX_APPCOMPACT_VERSION}"
 }
