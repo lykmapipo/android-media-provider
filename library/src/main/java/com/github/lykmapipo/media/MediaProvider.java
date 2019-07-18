@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.github.florent37.inlineactivityresult.Result;
@@ -143,13 +144,28 @@ public class MediaProvider {
     /**
      * Capture image
      *
+     * @param fragment
+     * @param listener
+     * @since 0.1.0
+     */
+    public static synchronized void captureImage(
+            @NonNull Fragment fragment,
+            @NonNull OnImageCapturedListener listener
+    ) {
+        captureImage(fragment.getActivity(), listener);
+    }
+
+    /**
+     * Capture image
+     *
      * @param activity
      * @param listener
      * @since 0.1.0
      */
     public static synchronized void captureImage(
             @NonNull FragmentActivity activity,
-            @NonNull OnImageCapturedListener listener) {
+            @NonNull OnImageCapturedListener listener
+    ) {
 
         // try capture image
         try {
@@ -199,7 +215,8 @@ public class MediaProvider {
      */
     public static synchronized void recordVideo(
             @NonNull FragmentActivity activity,
-            @NonNull OnVideoRecordedListener listener) {
+            @NonNull OnVideoRecordedListener listener
+    ) {
 
         // try record video
         try {
@@ -249,7 +266,8 @@ public class MediaProvider {
      */
     public static synchronized void recordAudio(
             @NonNull FragmentActivity activity,
-            @NonNull OnAudioRecordedListener listener) {
+            @NonNull OnAudioRecordedListener listener
+    ) {
 
         // try record audio
         // TODO use https://github.com/3llomi/RecordView
