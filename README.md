@@ -18,13 +18,13 @@ add `android-media-provider` dependency into your project
 
 ```gradle
 dependencies {
-    compile 'com.github.lykmapipo:android-media-provider:v0.1.0'
+    compile 'com.github.lykmapipo:android-media-provider:v0.3.0'
 }
 ```
 
 ## Usage
 
-In activity(or other component) capture image or record video and audio
+In activity(or fragment) capture image or record video and audio
 
 ```java
 public class MainActivity extends AppCompatActivity {
