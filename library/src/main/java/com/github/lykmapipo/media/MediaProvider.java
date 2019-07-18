@@ -274,6 +274,20 @@ public class MediaProvider {
     /**
      * Record an audio
      *
+     * @param fragment
+     * @param listener
+     * @since 0.1.0
+     */
+    public static synchronized void recordAudio(
+            @NonNull Fragment fragment,
+            @NonNull OnAudioRecordedListener listener
+    ) {
+        recordAudio(fragment.getActivity(), listener);
+    }
+
+    /**
+     * Record an audio
+     *
      * @param activity
      * @param listener
      * @since 0.1.0
