@@ -209,6 +209,20 @@ public class MediaProvider {
     /**
      * Record video
      *
+     * @param fragment
+     * @param listener
+     * @since 0.1.0
+     */
+    public static synchronized void recordVideo(
+            @NonNull Fragment fragment,
+            @NonNull OnVideoRecordedListener listener
+    ) {
+        recordVideo(fragment.getActivity(), listener);
+    }
+
+    /**
+     * Record video
+     *
      * @param activity
      * @param listener
      * @since 0.1.0
